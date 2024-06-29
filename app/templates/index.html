@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 id="top">NBS Algorithm Visualization</h1>
+<section id="about">
+    <h2>About</h2>
+    <div id="short-description">
+       <p>
+           This website visualizes the Near-Optimal Bidirectional Search (NBS) with Near-Optimal Node Expansions algorithm, a state-of-the-art approach to pathfinding in graphs.
+       </p>
+        <a href="#" id="read-more">Read more</a>
+    </div>
+    <div id="full-description" style="display: none;">
+        <p>NBS, introduced by Chen et al. in 2017, is a front-to-end bidirectional heuristic search algorithm that offers near-optimal performance in terms of necessary node expansions.</p>
+        <p>For more details, you can download the <a href="/static/NBS.pdf" download>article on NBS</a>. </p>
+        <h3>Key features of NBS:</h3>
+        <ul>
+            <li><strong>Bidirectional Search:</strong> Searches simultaneously from start and goal nodes.</li>
+            <li><strong>Near-Optimal Expansions:</strong> Guaranteed to expand <b>no more than twice </b>the optimal number of nodes.</li>
+            <li><strong>Adaptive Performance:</strong> Often outperforms A* and other bidirectional algorithms.</li>
+            <li><strong>Theoretical Foundations:</strong> Based on formal analysis of necessary node expansions.</li>
+        </ul>
+
+        <h3>How to use this visualization:</h3>
+        <ol>
+            <li>Enter the number of nodes you want in your graph, and click "Generate Random Graph" to create a random graph. </li>
+            <li>Or manually input edges using the form below and set the start and goal nodes in the respective input fields.</li>
+            <li>Press "Start Demonstration" to begin the NBS algorithm visualization.</li>
+        </ol>
+
+        <h3>What happens after pressing "Start Demonstration":</h3>
+        <ul>
+            <li>The algorithm will begin exploring the graph from both the start and goal nodes.</li>
+            <li>Nodes will change color as they are explored:
+                <ul>
+                    <li>Blue: Nodes expanded from the start</li>
+                    <li>Red: Nodes expanded from the goal</li>
+                    <li>Green: The optimal path once found</li>
+                </ul>
+            </li>
+            <li>The visualization will proceed step-by-step, allowing you to observe how NBS balances its bidirectional search.</li>
+            <li>Once the optimal path is found, it will be highlighted in green.</li>
+            <li>The total number of node expansions and the path cost will be displayed.</li>
+        </ul>
+
+        <p>This tool allows you to create custom graphs, set start and goal nodes, and observe NBS in action, providing insights into its efficiency and behavior on various graph configurations.</p>
+        <h3>Heuristics Explanation:</h3>
+        <p>The algorithm utilizes advanced heuristics to optimize the pathfinding process in the graph:</p>
+
+        <p><strong>Identifying Farthest Nodes:</strong> The algorithm begins by determining the two farthest nodes in the graph. This ensures that the selected start and goal nodes are as far apart as possible, creating a challenging scenario for the pathfinding process.</p>
+
+        <p><strong>Calculating Shortest Path Lengths:</strong> Once the start and goal nodes are identified, the algorithm calculates the shortest path lengths from each node to both the start and goal nodes. These calculations are performed using Dijkstra's algorithm, which provides the most efficient path lengths based on the weights of the edges in the graph.</p>
+
+        <p><strong>Ranking Nodes by Distance:</strong> The shortest path lengths are then used to rank the nodes by their distances from the start and goal nodes. This ranking helps the algorithm to effectively guide its bidirectional search, balancing the exploration from both the start and goal nodes to find the optimal path.</p>
+
+        <p>I have carefully designed these heuristics to be both admissible and consistent. This is crucial because the NBS algorithm guarantees an optimal solution only if the heuristics used are consistent. These properties ensure that the algorithm efficiently balances its bidirectional search, focusing on the most promising paths to find the optimal route.</p>
+
+        <a href="#top" id="read-less">Read less</a>
+    </div>
+</section>
+<div class="graph-container">
+    {% if graph_img %}
+        <img id="graph-img" src="data:image/png;base64,{{ graph_img }}" alt="Graph">
+    {% else %}
+        <p>No graph to display. Please enter edges below to generate the graph.</p>
+    {% endif %}
+<div>
+    <div>
+    <div>
+        <input type="number" id="num_nodes" placeholder="number of nodes">
+    </div>
+        <button type="button" id="generate-random-graph-btn">Generate Random Graph</button>
+    </div>
+        <button type="button" id="generate-demo-btn">Start Demonstration</button>
+</div>
+    <!-- Modal for error message -->
+    <div id="errorModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <p>No route was found. Please add more edges to the graph and try again.</p>
+      </div>
+    </div>
+    <div id="new-demo-container" class="photo-grid"></div>
+</div>
+<form method="post" class="graph-form">
+    <div id="edges-container">
+        <div class="edge-row header">
+
+            <span>Node 1</span>
+            <span>Node 2</span>
+            <span>Weight</span>
+        </div>
+        {% for edge in edges %}
+        <div class="edge-row">
+            <span>{{ loop.index }}</span>
+            <input type="number" name="node1[]" required value="{{ edge[0] }}">
+            <input type="number" name="node2[]" required value="{{ edge[1] }}">
+            <input type="number" name="weight[]" required value="{{ edge[2] }}" placeholder="Weight">
+        </div>
+        {% endfor %}
+        {% if not edges %}
+        <div class="edge-row">
+            <span>1</span>
+            <input type="number" name="node1[]" required>
+            <input type="number" name="node2[]" required>
+            <input type="number" name="weight[]" required placeholder="Weight">
+        </div>
+        {% endif %}
+    </div>
+    <button type="button" onclick="addEdge()">Add Edge</button>
+    <button type="button" onclick="removeEdge()">Remove Edge</button>
+    <div>
+        <label for="start_node">Start Node:</label>
+        <input type="number" id="start_node" name="start_node" required value="{{ start_node }}">
+    </div>
+    <div>
+        <label for="goal_node">Goal Node:</label>
+        <input type="number" id="goal_node" name="goal_node" required value="{{ goal_node }}">
+    </div>
+    <button type="submit">Generate Graph</button>
+</form>
+
+{% endblock %}
