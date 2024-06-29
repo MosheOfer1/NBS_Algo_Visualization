@@ -1,16 +1,12 @@
 import base64
 import pickle
 import random
-
-from flask import render_template, request, current_app as app, session, jsonify
+from flask import render_template, request, current_app as app, session, jsonify, flash
 import matplotlib
-
 from app.GraphProblem import GraphProblem
 from app.GraphVis import GraphVisualization
-
 from py_search.base import Node
 from py_search.informed import near_optimal_front_to_end_bidirectional_search
-
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
@@ -40,7 +36,9 @@ def index():
 
     else:  # GET request, generate a random graph
         num_nodes = request.args.get('num_nodes', random.randint(10, 20), int)
-        print(num_nodes)
+        if num_nodes < 2 or num_nodes > 40:
+            # Handle case where num_nodes is outside the valid range
+            return {'error': f'Number of nodes must be between 2 and 40, received: {num_nodes}'}
         graph_vis.generate_random_graph(num_nodes - 1)
 
     graph_img = graph_vis.get_graph_image()
@@ -74,7 +72,8 @@ def generate_photos():
 
     for idx, node in enumerate(near_optimal_front_to_end_bidirectional_search(problem)):
         if isinstance(node, list):
-            structured_message = [{'text': line[1:] if line.startswith("`") else line, 'is_title': line.startswith("`")} for idx, line in enumerate(node)]
+            structured_message = [{'text': line[1:] if line.startswith("`") else line, 'is_title': line.startswith("`")}
+                                  for idx, line in enumerate(node)]
             structured_messages.append(structured_message)
 
         elif isinstance(node, Node):
@@ -110,3 +109,8 @@ def generate_photos():
     session['graph_vis'] = base64.b64encode(pickle.dumps(graph_vis)).decode('utf-8')
 
     return {'photos': new_photos, 'messages': structured_messages}
+
+
+@app.route('/error')
+def error_page():
+    return "An error occurred: Your session data was too large and has been cleared."

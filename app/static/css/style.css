@@ -236,15 +236,17 @@ section#about a:hover {
     font-size: 13px;
     line-height: 1.3;
     text-align: left;
-    padding: 10px;  /* Add some padding for better readability */
+    padding: 10px;
 }
 
 .message .title {
-    font-weight: bold;
-    font-size: 12px;
+    background-color: #fff;
+    color: #4CAF50;
+    padding: 5px;
     margin-bottom: 5px;
-    text-align: left;
+    text-align: center;
 }
+
 
 .photo {
     width: 400px;

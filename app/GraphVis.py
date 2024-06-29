@@ -24,7 +24,7 @@ class GraphVisualization:
             weight = float(int(random.uniform(1, 10)))
             edges.append((i, i+1, weight))
             for j in range(i + 1, num_nodes):
-                if random.random() < (1 / num_nodes):
+                if random.random() < (1 / (num_nodes / 1.5)):
                     weight = float(int(random.uniform(1, 10)))
                     edges.append((i, j, weight))
 
@@ -112,8 +112,8 @@ class GraphVisualization:
         # Annotate each node with H.f and H.b values
         for node in self.G.nodes():
             x, y = self.pos[node]
-            x_offset = 0.1  # 0.101 if x < (x_max + x_min) / 2 else -0.101
-            y_offset = 0.1  # 0.101 if y < (y_max + y_min) / 2 else -0.101
+            x_offset = 0.1
+            y_offset = 0.1
             hf_value = self.H_f.get(node, float('inf'))
             hb_value = self.H_b.get(node, float('inf'))
             plt.text(x + x_offset, y + y_offset, f'H.f = {hf_value}\nH.b = {hb_value}',

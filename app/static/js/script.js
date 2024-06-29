@@ -24,18 +24,29 @@ function removeEdge() {
 }
 
 document.getElementById('generate-random-graph-btn').addEventListener('click', function() {
-    // location.reload();
     generateRandomGraph();
-
 });
+
+document.getElementById('num_nodes').addEventListener('keypress', function(event) {
+    if (event.key === 'Enter') {
+        generateRandomGraph();
+    }
+});
+
 
 function generateRandomGraph() {
     var numNodes = document.getElementById('num_nodes').value;
+     // Validate number of nodes
+    if (numNodes < 2 || numNodes > 40) {
+        alert(`Number of nodes must be between 2 and 40.`);
+        return;
+    }
     var url = '/?num_nodes=' + encodeURIComponent(numNodes);
 
     // Use window.location.href to reload the page with the new parameters
     window.location.href = url;
 }
+
 document.getElementById('generate-demo-btn').addEventListener('click', function() {
     fetch('/generate_photos', {
         method: 'POST',
