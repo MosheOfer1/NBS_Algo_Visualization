@@ -3,3 +3,4 @@
 venv/
 __pycache__/
 app/__pycache__/
+py_search/__pycache__/
