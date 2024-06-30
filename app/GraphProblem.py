@@ -15,7 +15,7 @@ class GraphProblem(Problem):
         if forward:
             return self.H_f.get(node, float("inf"))
         else:
-            return self.H_b[node]
+            return self.H_b.get(node, float("inf"))
 
     def node_value(self, node):
         if isinstance(node, GoalNode):

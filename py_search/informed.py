@@ -31,10 +31,9 @@ def near_optimal_front_to_end_bidirectional_search(problem):
 
         u_min = ffringe.peek()
         v_min = bfringe.peek()
-        lower_bound = max(problem.node_value(u_min), problem.node_value(v_min), u_min.cost() + v_min.cost())
 
-        if lower_bound >= c:
-            msg.append(f"\n{u_min} and {v_min} lower bound is {lower_bound} which is >= than C = {c}")
+        if ffringe.c_lb >= c:
+            msg.append(f"\n{u_min} and {v_min} lower bound is {ffringe.c_lb} which is >= than C = {c}")
             yield msg
             yield current_solution
 
