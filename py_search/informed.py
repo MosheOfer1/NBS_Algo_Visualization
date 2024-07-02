@@ -38,8 +38,9 @@ def near_optimal_front_to_end_bidirectional_search(problem):
             yield current_solution
 
         yield msg
-        u_min = ffringe.pop()
+
         # Forward Expand
+        u_min = ffringe.pop()
         for s in problem.successors(u_min):
             for goal in bfringe:
                 if problem.goal_test(u_min, goal):
@@ -51,9 +52,8 @@ def near_optimal_front_to_end_bidirectional_search(problem):
                 fclosed[s] = s.cost()
         yield u_min
 
-        v_min = bfringe.pop()
-
         # Backward Expand
+        v_min = bfringe.pop()
         for p in problem.predecessors(v_min):
             for state in ffringe:
                 if problem.goal_test(state, v_min):
